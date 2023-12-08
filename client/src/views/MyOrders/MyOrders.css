@@ -1,0 +1,28 @@
+h1{
+    text-align: center;
+}
+.orders-card{
+    text-align: center;
+    border: 1px solid black;
+    font-size: 20px;
+}
+p{
+  text-align: center;
+  }
+.price-text{
+    color: red;
+    font-weight: bolder;
+}
+
+.address-text{
+    color: rgb(177, 165, 0);
+    font-weight: bolder;
+}
+
+.quantity-text{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 23px;
+    color: rgb(4, 116, 50);
+}
+
+

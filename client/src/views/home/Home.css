@@ -1,17 +1,6 @@
-.text-center{
-    text-align:center;
-    border: 3px solid rgb(68, 17, 17);
-}
-.product-card{
-    color: rgb(85, 5, 5);
-    text-align: center;
-    border: 2px solid rgb(77, 22, 22);
-    padding: 5px;
-    margin: 5px 5px 5px 5px;
-}
 
-.heading{
-    text-align:center;
-    border: 3px solid rgb(94, 8, 8);
-    color: brown;
+.products-container{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }

@@ -2,6 +2,9 @@ import express from 'express'
 import mongoose from 'mongoose';
 import Product from './models/product.js';
 import dotenv from 'dotenv'; 
+import Order from './models/order.js';
+
+import User from './models/user.js';
 dotenv.config();
 
 const app = express();
@@ -19,21 +22,28 @@ connectMongoDB();
 
 app.post('/product' , async (req, res)=>{
 
-    const {name , price , description } = req.body;
+    const {name , price , description , image} = req.body;
     
     const product = new Product({
         name : name,
         price: price ,
-        description: description 
+        description: description,
+        image: image
     });
+    try{
+        const savedProduct = await product.save();
 
-    const savedProduct = await product.save();
-
-    res.json({
-        sucess: true,
-        data : savedProduct ,
-        message : 'Product added sucessfully'
-    })
+        res.json({
+            sucess: true,
+            data : savedProduct ,
+            message : 'Product added sucessfully'
+        })
+    }catch(e){
+        res.json({
+            success: false,
+            message: e.message
+        })
+    }   
 })
 
 app.get('/products' , async (req,res)=>{
@@ -82,12 +92,92 @@ app.put('/product/:id' ,async(req , res) => {
    const updatedProduct = await Product.findOne({_id: id});
 
    res.json({
-    sucess:true,
+    success:true,
     data: updatedProduct,
     message:'Product updated sucessfully'
    })
 });
-const PORT = 5000;
+
+app.post('/signup' ,async (req , res ) => {
+const {name , mobile , email , password } = req.body;
+
+const user = new User ({
+    name: name,
+    mobile: mobile,
+    email: email,
+    password: password
+});
+try {
+    const savedUser = await user.save();
+
+    return res.json({
+        success: true,
+        data: savedUser,
+        message: 'User Registered successfully'
+    })
+}
+catch(e){
+return res.json({
+    success: false,
+    message: e.message
+})
+}
+});
+
+app.post('/login' , async(req , res ) => {
+    
+    const{ email , password } = req.body;
+
+    const user = await User.findOne({email: email , password: password});
+
+    if(user){
+        return res.json({
+            success:true,
+            data: user,
+            message:'Userlogged in Successfully'
+        })
+    }
+    else{
+        res.json({
+            success:false,
+            message:'Invalid user details'
+        })
+    }
+})
+
+app.post('/order' , async (req , res ) => {
+    const {product , user , quantity , shippingAddress} = req.body;
+
+    const order = new Order ({
+        product: product,
+        user: user,
+        quantity: quantity,
+        shippingAddress: shippingAddress
+    });
+
+    const savedOrder = await order.save();
+
+    return res.json({
+        success: true,
+        data: savedOrder,
+        message: "Order placed successfully"
+    })
+ })
+
+ app.get('/orders' , async(req , res) => {
+    const {id} = req.query;
+
+    const myOrders = await Order.find({user : id}).populate("product user");
+
+    res.json({
+        success: true,
+        data: myOrders,
+        message:"Orders Retrieved Succesfully"
+    })
+ })
+const PORT = 5000; 
+
+
 
 app.listen(PORT , ()=>{
     console.log(`Server is running on port ${PORT}`)
