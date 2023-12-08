@@ -1,11 +1,15 @@
-import express from 'express'
+import express from 'express';
 import mongoose from 'mongoose';
 import Product from './models/product.js';
-import dotenv from 'dotenv'; 
+import dotenv from 'dotenv';
+dotenv.config();
+
 import Order from './models/order.js';
+import path  from 'path';
+const __dirname = path.resolve();
 
 import User from './models/user.js';
-dotenv.config();
+
 
 const app = express();
 app.use(express.json());
@@ -175,9 +179,16 @@ app.post('/order' , async (req , res ) => {
         message:"Orders Retrieved Succesfully"
     })
  })
+
+
+ if (process.env.NODE_ENV === "production"){
+    app.use(express.static(path.join(__dirname, '..' , 'client' , 'built' )));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '..' , 'client' , 'built', 'index.html'))
+    });
+}
 const PORT = 5000; 
-
-
 
 app.listen(PORT , ()=>{
     console.log(`Server is running on port ${PORT}`)
